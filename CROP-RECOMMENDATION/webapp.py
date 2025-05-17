@@ -22,25 +22,35 @@ import requests
 from io import BytesIO
 
 try:
-    # Use a default image URL as fallback
+    # Use the direct image URL
     default_image_url = "https://i.ibb.co/V0zKXccx/crop.png"
     
-    # First try to load local image
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    image_path = os.path.join(current_dir, "crop.png")
+    # Attempt to load image from URL with proper headers
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Accept': 'image/webp,image/apng,image/*,*/*;q=0.8',
+        'Referer': 'https://i.ibb.co/'
+    }
     
-    if os.path.exists(image_path):
-        img = Image.open(image_path)
-    else:
-        # If local image not found, use the default image from URL
-        response = requests.get(default_image_url)
-        img = Image.open(BytesIO(response.content))
+    # Add debug information
+    st.write("Attempting to load image...")
     
-    # Display the image
+    response = requests.get(default_image_url, headers=headers, verify=True, timeout=10)
+    response.raise_for_status()
+    
+    content_type = response.headers.get('content-type', '')
+    if 'image' not in content_type:
+        raise ValueError(f"URL did not return an image (got {content_type})")
+        
+    img = Image.open(BytesIO(response.content))
     st.image(img, caption="Welcome to Crop Recommendation", use_container_width=True)
     
+except requests.RequestException as e:
+    st.error(f"Failed to load image from URL: {str(e)}")
+    # Fallback to text
+    st.markdown("## Welcome to Crop Recommendation System")
 except Exception as e:
-    st.error(f"Error loading image: {str(e)}")
+    st.error(f"Error handling image: {str(e)}")
     st.markdown("## Welcome to Crop Recommendation System")
 
 df= pd.read_csv('Crop_recommendation.csv')
