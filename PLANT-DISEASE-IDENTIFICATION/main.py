@@ -17,11 +17,13 @@ app_mode = st.sidebar.selectbox("Select Page",["HOME","DISEASE RECOGNITION"])
 
 # import Image from pillow to open images
 
+default_image_path = "https://placeholder.com/path/to/default/image.jpg"
 try:
     img = Image.open("Diseases.png")
-    st.image(img)
 except FileNotFoundError:
-    st.write("Welcome to LeafX Plant Disease Detection")
+    st.image(default_image_path, caption="Default Image")
+else:
+    st.image(img)
 
 #Main Page
 if(app_mode=="HOME"):
