@@ -28,15 +28,19 @@ try:
 except FileNotFoundError:
     try:
         # If local image not found, load from URL
-        response = requests.get(default_image_path, stream=True)
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+        response = requests.get(default_image_path, stream=True, headers=headers)
         response.raise_for_status()  # Raise an error for bad status codes
         img = Image.open(BytesIO(response.content))
         st.image(img, caption="Welcome to LeafX", use_column_width=True)
     except requests.RequestException as e:
         st.error(f"Failed to fetch image from URL: {str(e)}")
+        # Fallback text in case both local and remote images fail
+        st.write("Welcome to LeafX Plant Disease Detection System")
     except Exception as e:
         st.error(f"Error loading image: {str(e)}")
-        # Fallback to text if image fails
         st.write("Welcome to LeafX Plant Disease Detection System")
 else:
     st.image(img, use_column_width=True)
