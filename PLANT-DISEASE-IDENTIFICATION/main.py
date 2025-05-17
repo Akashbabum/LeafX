@@ -20,7 +20,7 @@ app_mode = st.sidebar.selectbox("Select Page",["HOME","DISEASE RECOGNITION"])
 # import Image from pillow to open images
 
 # Update the default image path to a reliable image URL
-default_image_path = "https://raw.githubusercontent.com/spMohanty/PlantVillage-Dataset/master/raw/color/Apple___healthy/0a5e9323-dbad-432d-ac58-d291718345d9___RS_HL%207701.JPG"
+default_image_path = "https://ibb.co/5h6pwRQy"
 
 try:
     # First try to open local image
