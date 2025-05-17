@@ -8,20 +8,35 @@ import os
 
 def model_prediction(test_image):
     try:
-        # Get absolute path to model file
+        # Get absolute path to model file and verify its existence
         current_dir = os.path.dirname(os.path.abspath(__file__))
         model_path = os.path.join(current_dir, "trained_plant_disease_model.keras")
         
-        # Verify model file
+        # Debug information
+        st.write("Debug Information:")
+        st.write(f"Current directory: {current_dir}")
+        st.write(f"Model path: {model_path}")
+        st.write(f"Files in directory: {os.listdir(current_dir)}")
+        
+        # Check model file
         if not os.path.exists(model_path):
             st.error(f"Model file not found at: {model_path}")
-            st.write(f"Current directory contents: {os.listdir(current_dir)}")
+            return None
+        
+        # Verify file size
+        file_size = os.path.getsize(model_path)
+        st.write(f"Model file size: {file_size} bytes")
+        if file_size == 0:
+            st.error("Model file exists but is empty")
             return None
             
-        # Load model with custom object scope
-        with tf.keras.utils.custom_object_scope({}):
+        # Load model with error handling
+        try:
             model = tf.keras.models.load_model(model_path, compile=False)
             st.success("Model loaded successfully")
+        except Exception as model_error:
+            st.error(f"Error loading model: {str(model_error)}")
+            return None
             
         # Process image
         image = tf.keras.preprocessing.image.load_img(test_image, target_size=(128,128))
@@ -33,11 +48,7 @@ def model_prediction(test_image):
         return np.argmax(predictions)
         
     except Exception as e:
-        st.error("Error in model prediction:")
-        st.error(str(e))
-        st.write("Debug info:")
-        st.write(f"TensorFlow version: {tf.__version__}")
-        st.write(f"Model file size: {os.path.getsize(model_path)} bytes")
+        st.error(f"Error in model prediction: {str(e)}")
         return None
 
 #Sidebar
