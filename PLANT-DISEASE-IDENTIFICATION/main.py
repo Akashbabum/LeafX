@@ -2,6 +2,8 @@ import streamlit as st
 import tensorflow as tf
 import numpy as np
 from PIL import Image
+import requests
+from io import BytesIO
 def model_prediction(test_image):
     model = tf.keras.models.load_model("trained_plant_disease_model.keras")
     image = tf.keras.preprocessing.image.load_img(test_image,target_size=(128,128))
@@ -17,11 +19,20 @@ app_mode = st.sidebar.selectbox("Select Page",["HOME","DISEASE RECOGNITION"])
 
 # import Image from pillow to open images
 
+# Update the default image path to a reliable source
 default_image_path = "https://im.ge/i/360-F-638132571-khYMb1VwmoXYeKCcIcVTuTBPeQxnbrTR.vWNoVW"
+
 try:
+    # First try to open local image
     img = Image.open("Diseases.png")
 except FileNotFoundError:
-    st.image(default_image_path, caption="Default Image")
+    try:
+        # If local image not found, load from URL
+        response = requests.get(default_image_path)
+        img = Image.open(BytesIO(response.content))
+        st.image(img, caption="Welcome to LeafX")
+    except Exception as e:
+        st.error(f"Could not load image: {str(e)}")
 else:
     st.image(img)
 
