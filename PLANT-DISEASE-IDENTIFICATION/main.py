@@ -7,26 +7,37 @@ from io import BytesIO
 import os
 
 def model_prediction(test_image):
-    # Try both .keras and SavedModel formats
-    model_path = "trained_plant_disease_model.keras"
-    saved_model_path = "trained_plant_disease_model"
-    
     try:
-        if os.path.exists(model_path):
-            model = tf.keras.models.load_model(model_path)
-        elif os.path.exists(saved_model_path):
-            model = tf.keras.models.load_model(saved_model_path)
-        else:
-            st.error("No model file found")
+        # Get absolute path to model file
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        model_path = os.path.join(current_dir, "trained_plant_disease_model.keras")
+        
+        # Verify model file
+        if not os.path.exists(model_path):
+            st.error(f"Model file not found at: {model_path}")
+            st.write(f"Current directory contents: {os.listdir(current_dir)}")
             return None
             
+        # Load model with custom object scope
+        with tf.keras.utils.custom_object_scope({}):
+            model = tf.keras.models.load_model(model_path, compile=False)
+            st.success("Model loaded successfully")
+            
+        # Process image
         image = tf.keras.preprocessing.image.load_img(test_image, target_size=(128,128))
         input_arr = tf.keras.preprocessing.image.img_to_array(image)
         input_arr = np.array([input_arr]) #convert single image to batch
+        
+        # Make prediction
         predictions = model.predict(input_arr)
         return np.argmax(predictions)
+        
     except Exception as e:
-        st.error(f"Error loading model: {str(e)}")
+        st.error("Error in model prediction:")
+        st.error(str(e))
+        st.write("Debug info:")
+        st.write(f"TensorFlow version: {tf.__version__}")
+        st.write(f"Model file size: {os.path.getsize(model_path)} bytes")
         return None
 
 #Sidebar
