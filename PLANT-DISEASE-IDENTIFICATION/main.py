@@ -19,31 +19,16 @@ app_mode = st.sidebar.selectbox("Select Page",["HOME","DISEASE RECOGNITION"])
 
 # import Image from pillow to open images
 
-# Update the default image path to a reliable image URL
-default_image_path = "https://ibb.co/5h6pwRQy"
+# Update the default image path to a reliable direct image URL
+default_image_path = "https://ibb.co/5h6pwRQy"  # Direct link to a plant disease image
 
 try:
-    # First try to open local image
-    img = Image.open("Diseases.png")
-except FileNotFoundError:
-    try:
-        # If local image not found, load from URL
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-        }
-        response = requests.get(default_image_path, stream=True, headers=headers)
-        response.raise_for_status()  # Raise an error for bad status codes
-        img = Image.open(BytesIO(response.content))
-        st.image(img, caption="Welcome to LeafX", use_column_width=True)
-    except requests.RequestException as e:
-        st.error(f"Failed to fetch image from URL: {str(e)}")
-        # Fallback text in case both local and remote images fail
-        st.write("Welcome to LeafX Plant Disease Detection System")
-    except Exception as e:
-        st.error(f"Error loading image: {str(e)}")
-        st.write("Welcome to LeafX Plant Disease Detection System")
-else:
-    st.image(img, use_column_width=True)
+    response = requests.get(default_image_path)
+    img = Image.open(BytesIO(response.content))
+    st.image(img, caption="Welcome to LeafX", use_column_width=True)
+except Exception as e:
+    st.error("Failed to load welcome image")
+    st.write("Welcome to LeafX Plant Disease Detection System")
 
 #Main Page
 if(app_mode=="HOME"):
