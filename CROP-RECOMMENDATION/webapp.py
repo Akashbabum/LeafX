@@ -17,12 +17,25 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
 # Display Images
-# import Image from pillow to open images
-from PIL import Image
-img = Image.open("crop.png")
-# display image using streamlit
-# width is used to set the width of an image
-st.image(img)
+try:
+    # Get absolute path to the image
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    image_path = os.path.join(current_dir, "crop.png")
+    
+    # Debug information
+    st.write(f"Looking for image at: {image_path}")
+    st.write(f"Files in directory: {os.listdir(current_dir)}")
+    
+    # Try to open image with error handling
+    if os.path.exists(image_path):
+        img = Image.open(image_path)
+        st.image(img, caption="Welcome to Crop Recommendation", use_container_width=True)
+    else:
+        st.warning(f"Image not found at: {image_path}")
+        st.write("Welcome to Crop Recommendation System")
+except Exception as e:
+    st.error(f"Error loading image: {str(e)}")
+    st.write("Welcome to Crop Recommendation System")
 
 df= pd.read_csv('Crop_recommendation.csv')
 
