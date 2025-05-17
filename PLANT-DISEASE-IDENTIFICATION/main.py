@@ -17,7 +17,7 @@ app_mode = st.sidebar.selectbox("Select Page",["HOME","DISEASE RECOGNITION"])
 
 # import Image from pillow to open images
 
-default_image_path = "https://placeholder.com/path/to/default/image.jpg"
+default_image_path = "https://www.freepik.com/free-photo/sunny-meadow-landscape_877658.htm#fromView=keyword&page=1&position=0&uuid=8235a6ed-b05a-4db6-9b30-b085d25dc7a3&query=Agriculture+Banner"
 try:
     img = Image.open("Diseases.png")
 except FileNotFoundError:
