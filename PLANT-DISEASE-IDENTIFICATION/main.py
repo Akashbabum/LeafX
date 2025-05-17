@@ -20,7 +20,7 @@ app_mode = st.sidebar.selectbox("Select Page",["HOME","DISEASE RECOGNITION"])
 # import Image from pillow to open images
 
 # Update the default image path to a reliable direct image URL
-default_image_path = "https://ibb.co/5h6pwRQy"  # Direct link to a plant disease image
+default_image_path = "https://i.ibb.co/ZzV47MQP/360-F-638132571-kh-YMb1-Vwmo-XYe-KCc-Ic-VTu-TBPe-Qxnbr-TR.jpg"  # Direct link to a plant disease image
 
 try:
     response = requests.get(default_image_path)
