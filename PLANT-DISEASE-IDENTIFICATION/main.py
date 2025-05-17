@@ -19,8 +19,8 @@ app_mode = st.sidebar.selectbox("Select Page",["HOME","DISEASE RECOGNITION"])
 
 # import Image from pillow to open images
 
-# Update the default image path to a reliable source
-default_image_path = "https://im.ge/i/360-F-638132571-khYMb1VwmoXYeKCcIcVTuTBPeQxnbrTR.vWNoVW"
+# Update the default image path to a reliable image URL
+default_image_path = "https://raw.githubusercontent.com/spMohanty/PlantVillage-Dataset/master/raw/color/Apple___healthy/0a5e9323-dbad-432d-ac58-d291718345d9___RS_HL%207701.JPG"
 
 try:
     # First try to open local image
@@ -28,13 +28,18 @@ try:
 except FileNotFoundError:
     try:
         # If local image not found, load from URL
-        response = requests.get(default_image_path)
+        response = requests.get(default_image_path, stream=True)
+        response.raise_for_status()  # Raise an error for bad status codes
         img = Image.open(BytesIO(response.content))
-        st.image(img, caption="Welcome to LeafX")
+        st.image(img, caption="Welcome to LeafX", use_column_width=True)
+    except requests.RequestException as e:
+        st.error(f"Failed to fetch image from URL: {str(e)}")
     except Exception as e:
-        st.error(f"Could not load image: {str(e)}")
+        st.error(f"Error loading image: {str(e)}")
+        # Fallback to text if image fails
+        st.write("Welcome to LeafX Plant Disease Detection System")
 else:
-    st.image(img)
+    st.image(img, use_column_width=True)
 
 #Main Page
 if(app_mode=="HOME"):
