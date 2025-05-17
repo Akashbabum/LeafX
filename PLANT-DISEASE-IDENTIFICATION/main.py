@@ -17,11 +17,11 @@ app_mode = st.sidebar.selectbox("Select Page",["HOME","DISEASE RECOGNITION"])
 
 # import Image from pillow to open images
 
-img = Image.open("Diseases.png")
-
-# display image using streamlit
-# width is used to set the width of an image
-st.image(img)
+try:
+    img = Image.open("Diseases.png")
+    st.image(img)
+except FileNotFoundError:
+    st.write("Welcome to LeafX Plant Disease Detection")
 
 #Main Page
 if(app_mode=="HOME"):
