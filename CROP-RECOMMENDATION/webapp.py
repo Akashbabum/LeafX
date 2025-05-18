@@ -36,20 +36,20 @@ def load_static_image(url, timeout=10):
         return None
 
 try:
-    # Use a single, reliable static image URL
-    static_image_url = "https://i.ibb.co/V0zKXccx/crop.png"
+    # Get path to static image
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    image_path = os.path.join(current_dir, 'static', 'crop.png')
     
-    # Load and cache the image
-    img = load_static_image(static_image_url)
-    
-    # Display the image if loaded successfully
-    if img is not None:
+    # Load and display image
+    if os.path.exists(image_path):
+        img = Image.open(image_path)
         st.image(img, caption="Welcome to Crop Recommendation System", use_container_width=True)
     else:
+        st.error("Welcome image not found")
         st.markdown("## Welcome to Crop Recommendation System")
     
 except Exception as e:
-    st.error(f"Error in image handling: {str(e)}")
+    st.error(f"Error loading welcome image: {str(e)}")
     st.markdown("## Welcome to Crop Recommendation System")
 
 # Load data from CSV file
