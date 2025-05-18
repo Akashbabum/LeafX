@@ -46,27 +46,27 @@ except Exception as e:
     st.error(f"Error handling welcome image: {str(e)}")
     st.markdown("## Welcome to Crop Recommendation System")
 
-# Load data from local CSV file
+# Load data from CSV file
 try:
-    # Get the current directory path
+    # First try to load from local file
     current_dir = os.path.dirname(os.path.abspath(__file__))
     csv_path = os.path.join(current_dir, 'Crop_recommendation.csv')
     
     st.info("Loading dataset...")
     
-    # Check if file exists
-    if not os.path.exists(csv_path):
-        st.error(f"Dataset file not found at: {csv_path}")
-        st.info("Please ensure 'Crop_recommendation.csv' is in the same directory as webapp.py")
-        st.stop()
-    
-    # Load the CSV file
-    df = pd.read_csv(csv_path)
-    st.success("Dataset loaded successfully!")
+    # Try local file first
+    if os.path.exists(csv_path):
+        df = pd.read_csv(csv_path)
+        st.success("Dataset loaded successfully from local file!")
+    else:
+        # Fallback to remote file
+        csv_url = "https://raw.githubusercontent.com/akashbabum/LeafX/main/CROP-RECOMMENDATION/Crop_recommendation.csv"
+        df = pd.read_csv(csv_url)
+        st.success("Dataset loaded successfully from remote source!")
     
 except Exception as e:
     st.error(f"Error loading dataset: {str(e)}")
-    st.info("Please check if the file has correct permissions")
+    st.info("Please ensure the dataset file is available")
     st.stop()
 
 #features = df[['temperature', 'humidity', 'ph', 'rainfall']]
