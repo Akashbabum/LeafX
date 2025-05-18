@@ -46,23 +46,27 @@ except Exception as e:
     st.error(f"Error handling welcome image: {str(e)}")
     st.markdown("## Welcome to Crop Recommendation System")
 
-# Get absolute path to the data file
+# Load data from local CSV file
 try:
+    # Get the current directory path
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    data_file = os.path.join(current_dir, 'Crop_recommendation.csv')
+    csv_path = os.path.join(current_dir, 'Crop_recommendation.csv')
     
-    # Verify if file exists
-    if not os.path.exists(data_file):
-        st.error(f"Data file not found at: {data_file}")
-        st.info("Please make sure 'Crop_recommendation.csv' is in the correct directory")
+    st.info("Loading dataset...")
+    
+    # Check if file exists
+    if not os.path.exists(csv_path):
+        st.error(f"Dataset file not found at: {csv_path}")
+        st.info("Please ensure 'Crop_recommendation.csv' is in the same directory as webapp.py")
         st.stop()
     
     # Load the CSV file
-    df = pd.read_csv(data_file)
+    df = pd.read_csv(csv_path)
+    st.success("Dataset loaded successfully!")
     
 except Exception as e:
-    st.error(f"Error loading data file: {str(e)}")
-    st.info("Please check if the data file exists and has correct permissions")
+    st.error(f"Error loading dataset: {str(e)}")
+    st.info("Please check if the file has correct permissions")
     st.stop()
 
 #features = df[['temperature', 'humidity', 'ph', 'rainfall']]
