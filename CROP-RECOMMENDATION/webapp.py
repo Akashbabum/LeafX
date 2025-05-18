@@ -21,40 +21,48 @@ from PIL import Image
 import requests
 from io import BytesIO
 
-def load_image_from_url(url, timeout=5):
+def load_image_from_url(url, timeout=10, max_retries=3):
     headers = {
-        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36',
-        'Accept': 'image/*'
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Accept': 'image/webp,image/apng,image/*,*/*;q=0.8'
     }
-    response = requests.get(url, headers=headers, timeout=timeout)
+    
+    session = requests.Session()
+    session.mount('https://', requests.adapters.HTTPAdapter(max_retries=max_retries))
+    
+    response = session.get(url, headers=headers, timeout=timeout)
     response.raise_for_status()
     return Image.open(BytesIO(response.content))
 
 try:
-    # List of backup image URLs
+    # List of backup image URLs (using more reliable image hosts)
     image_urls = [
-        "https://i.ibb.co/V0zKXccx/crop.png",
+        "https://images.pexels.com/photos/2286202/pexels-photo-2286202.jpeg",
         "https://images.unsplash.com/photo-1574943320219-553eb213f72d",
-        "https://images.pexels.com/photos/2286202/pexels-photo-2286202.jpeg"
+        "https://images.pexels.com/photos/265216/pexels-photo-265216.jpeg"
     ]
     
     # Try each URL until one works
     img = None
     for url in image_urls:
         try:
+            st.info(f"Attempting to load image from {url}")
             img = load_image_from_url(url)
+            st.success("Image loaded successfully!")
             break
-        except:
+        except Exception as url_error:
+            st.warning(f"Failed to load image from {url}: {str(url_error)}")
             continue
     
     # If an image was loaded successfully, display it
     if img:
         st.image(img, caption="Welcome to Crop Recommendation System", use_container_width=True)
     else:
-        raise Exception("Failed to load image from all sources")
+        st.error("Failed to load image from all sources")
+        st.markdown("## Welcome to Crop Recommendation System")
     
 except Exception as e:
-    st.warning("Unable to load welcome image, continuing without it...")
+    st.error(f"Error in image handling: {str(e)}")
     st.markdown("## Welcome to Crop Recommendation System")
 
 # Load data from CSV file
