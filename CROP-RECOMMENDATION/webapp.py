@@ -46,7 +46,24 @@ except Exception as e:
     st.error(f"Error handling welcome image: {str(e)}")
     st.markdown("## Welcome to Crop Recommendation System")
 
-df= pd.read_csv('Crop_recommendation.csv')
+# Get absolute path to the data file
+try:
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    data_file = os.path.join(current_dir, 'Crop_recommendation.csv')
+    
+    # Verify if file exists
+    if not os.path.exists(data_file):
+        st.error(f"Data file not found at: {data_file}")
+        st.info("Please make sure 'Crop_recommendation.csv' is in the correct directory")
+        st.stop()
+    
+    # Load the CSV file
+    df = pd.read_csv(data_file)
+    
+except Exception as e:
+    st.error(f"Error loading data file: {str(e)}")
+    st.info("Please check if the data file exists and has correct permissions")
+    st.stop()
 
 #features = df[['temperature', 'humidity', 'ph', 'rainfall']]
 X = df[['N', 'P','K','temperature', 'humidity', 'ph', 'rainfall']]
