@@ -21,29 +21,40 @@ from PIL import Image
 import requests
 from io import BytesIO
 
-try:
-    # Use a reliable direct image URL for the crop image
-    default_image_url = "https://i.ibb.co/V0zKXccx/crop.png"
-    
-    # Setup proper headers for image request
+def load_image_from_url(url, timeout=5):
     headers = {
-        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-        'Accept': 'image/webp,image/apng,image/*,*/*;q=0.8'
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36',
+        'Accept': 'image/*'
     }
-    
-    # Make request with proper error handling
-    response = requests.get(default_image_url, headers=headers, verify=True, timeout=10)
+    response = requests.get(url, headers=headers, timeout=timeout)
     response.raise_for_status()
+    return Image.open(BytesIO(response.content))
+
+try:
+    # List of backup image URLs
+    image_urls = [
+        "https://i.ibb.co/V0zKXccx/crop.png",
+        "https://images.unsplash.com/photo-1574943320219-553eb213f72d",
+        "https://images.pexels.com/photos/2286202/pexels-photo-2286202.jpeg"
+    ]
     
-    # Load and display image directly from response content
-    img = Image.open(BytesIO(response.content))
-    st.image(img, caption="Welcome to Crop Recommendation System", use_container_width=True)
+    # Try each URL until one works
+    img = None
+    for url in image_urls:
+        try:
+            img = load_image_from_url(url)
+            break
+        except:
+            continue
     
-except requests.RequestException as e:
-    st.error(f"Failed to load welcome image: {str(e)}")
-    st.markdown("## Welcome to Crop Recommendation System")
+    # If an image was loaded successfully, display it
+    if img:
+        st.image(img, caption="Welcome to Crop Recommendation System", use_container_width=True)
+    else:
+        raise Exception("Failed to load image from all sources")
+    
 except Exception as e:
-    st.error(f"Error handling welcome image: {str(e)}")
+    st.warning("Unable to load welcome image, continuing without it...")
     st.markdown("## Welcome to Crop Recommendation System")
 
 # Load data from CSV file
