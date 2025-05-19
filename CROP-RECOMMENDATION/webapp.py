@@ -24,21 +24,18 @@ from io import BytesIO
 # Add default image path
 default_image_path = "https://i.ibb.co/CsKb8RMR/crop.jpg"
 
+# Create static directory if it doesn't exist
+static_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
+if not os.path.exists(static_dir):
+    os.makedirs(static_dir)
+
 try:
-    # First try loading from static directory
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    image_path = os.path.join(current_dir, 'static', 'crop.png')
-    
-    if os.path.exists(image_path):
-        img = Image.open(image_path)
-        st.image(img, caption="Welcome to Crop Recommendation System", use_container_width=True)
-    else:
-        # Fallback to default online image
-        response = requests.get(default_image_path)
-        img = Image.open(BytesIO(response.content))
-        st.image(img, caption="Welcome to LeafX", use_container_width=True)
+    # Try to load the default online image first
+    response = requests.get(default_image_path)
+    img = Image.open(BytesIO(response.content))
+    st.image(img, caption="Welcome to LeafX", use_container_width=True)
 except Exception as e:
-    st.error(f"Error loading images: {str(e)}")
+    st.error(f"Error loading default image: {str(e)}")
     st.markdown("## Welcome to Crop Recommendation System")
 
 # Load data from CSV file
