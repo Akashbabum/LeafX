@@ -21,35 +21,24 @@ from PIL import Image
 import requests
 from io import BytesIO
 
-@st.cache_data  # Cache the image loading function
-def load_static_image(url, timeout=10):
-    try:
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36',
-            'Accept': 'image/*'
-        }
-        response = requests.get(url, headers=headers, timeout=timeout)
-        response.raise_for_status()
-        return Image.open(BytesIO(response.content))
-    except Exception as e:
-        st.error(f"Error loading image: {str(e)}")
-        return None
+# Add default image path
+default_image_path = "https://i.ibb.co/CsKb8RMR/crop.jpg"
 
 try:
-    # Get path to static image
+    # First try loading from static directory
     current_dir = os.path.dirname(os.path.abspath(__file__))
     image_path = os.path.join(current_dir, 'static', 'crop.png')
     
-    # Load and display image
     if os.path.exists(image_path):
         img = Image.open(image_path)
         st.image(img, caption="Welcome to Crop Recommendation System", use_container_width=True)
     else:
-        st.error("Welcome image not found")
-        st.markdown("## Welcome to Crop Recommendation System")
-    
+        # Fallback to default online image
+        response = requests.get(default_image_path)
+        img = Image.open(BytesIO(response.content))
+        st.image(img, caption="Welcome to LeafX", use_container_width=True)
 except Exception as e:
-    st.error(f"Error loading welcome image: {str(e)}")
+    st.error(f"Error loading images: {str(e)}")
     st.markdown("## Welcome to Crop Recommendation System")
 
 # Load data from CSV file
