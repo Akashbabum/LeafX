@@ -91,7 +91,7 @@ x = metrics.accuracy_score(Ytest, predicted_values)
 # Function to load and display an image of the predicted crop
 def show_crop_image(crop_name):
     # Assuming we have a directory named 'crop_images' with images named as 'crop_name.jpg'
-    image_path = os.path.join('crop_images', crop_name.lower()+'.jpg')
+    image_path = os.path.join('crop_images', crop_name.lower()+'.png')
     if os.path.exists(image_path):
         st.image(image_path, caption=f"Recommended crop: {crop_name}", use_column_width=True)
     else:
