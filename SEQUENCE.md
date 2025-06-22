@@ -1,16 +1,22 @@
 ```mermaid
 sequenceDiagram
-    participant User
-    participant Frontend
-    participant Backend
-    participant ExternalAPI
+    participant Farmer
+    participant WebApp as Web App (Streamlit)
+    participant Backend as Backend Model
 
-    User->>Frontend: Initiates Action (e.g., Request Data)
-    Frontend->>Backend: Sends API Request
-    %% Database interactions and login removed
-    Backend->>ExternalAPI: (Optional) Calls External Service
-    ExternalAPI-->>Backend: Returns Data/Status
-    %% Data handled in-memory in Backend
-    Backend-->>Frontend: Returns Response (Data/Status)
-    Frontend-->>User: Displays Results/Updates UI
+    %% General module flow (e.g., crop recommendation)
+    Farmer->>WebApp: Selects module (e.g., crop recommendation)
+    WebApp->>Farmer: Prompts for input data
+    Farmer->>WebApp: Provides input data
+    WebApp->>Backend: Sends input data for prediction
+    Backend-->>WebApp: Returns prediction/result
+    WebApp-->>Farmer: Displays result
+
+    %% Disease detection module flow
+    Farmer->>WebApp: Selects disease detection module
+    WebApp->>Farmer: Prompts for image upload
+    Farmer->>WebApp: Uploads image
+    WebApp->>Backend: Sends image for processing/classification
+    Backend-->>WebApp: Returns diagnosis
+    WebApp-->>Farmer: Displays diagnosis result
 ```
