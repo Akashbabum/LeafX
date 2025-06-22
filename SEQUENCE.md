@@ -1,3 +1,4 @@
+```mermaid
 sequenceDiagram
     participant User
     participant Frontend
@@ -12,3 +13,4 @@ sequenceDiagram
     %% Data handled in-memory in Backend
     Backend-->>Frontend: Returns Response (Data/Status)
     Frontend-->>User: Displays Results/Updates UI
+```
